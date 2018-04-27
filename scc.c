@@ -22,10 +22,13 @@ int main(int argc, char* argv[])
     int n;
     for(n = 0; n < f_size; n++)
     {
-        printf("%c", buffer[n]);
+        //printf("%s", buffer);
     }
+        printf("%s", buffer);
+    
 
-    return(0);
+
+    return 0;
 }
 
 
@@ -59,6 +62,7 @@ int parse(char* fname, char* inp_buff)
         
         //printf("%c", c);  
     }
+       printf("%s", inp_buff);
 
     fclose(fp);
 
