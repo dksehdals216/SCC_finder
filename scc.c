@@ -1,15 +1,25 @@
 
+/***
+
+
+Assumptions:
+    We Assume that input matrix is of even colomn and width size, that is, it is an n x n matrix.
+
+
+***/
+
 #include <stdlib.h>
 #include <stdio.h>
 
 
-int parse(char* fname, char* inp_buff);
+int parse(char* fname, char** inp_buff);
+void transpose(char** src, char dst[], int size);
 
 int main(int argc, char* argv[])
 {
-	int f_size = 0;
-
+	int height = 0;
     char *buffer;
+
 
     if (argc != 2)
     {
@@ -17,28 +27,34 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    f_size = parse(argv[1], buffer);
+    height = parse(argv[1], &buffer);
 
-    int n;
-    for(n = 0; n < f_size; n++)
-    {
-        //printf("%s", buffer);
-    }
-        printf("%s", buffer);
+    char t_array[height * height];
+
+    transpose(&buffer, t_array, height * height);
     
-
+    free(buffer);
+    //printf("%s", buffer);
+    
+    //printf("%d", height);
 
     return 0;
 }
 
+void transpose(char** src, char dst[], int size)
+{
 
-int parse(char* fname, char* inp_buff)
+}
+
+int parse(char* fname, char** buffer)
 {
     int c;
     FILE * fp;
     int f_size;
     int n = 0;
     int newline_c = 0;
+    char* inp_buff;
+    int height = 0;
 
     fp = fopen (fname, "r");
     if (fp == NULL)
@@ -55,16 +71,21 @@ int parse(char* fname, char* inp_buff)
 
     while ((c = fgetc(fp)) != EOF)
     {       
-        if( c != '\t' && c != ' ')
+        if (c != '\t' && c != ' ')
         {
             inp_buff[n++] = c;
         }
+        if (c == '\n')
+        {
+            height++;
+        } 
         
         //printf("%c", c);  
     }
-       printf("%s", inp_buff);
+    //printf("%s\n", inp_buff);
+    *buffer = inp_buff;
 
     fclose(fp);
 
-    return f_size;
+    return height;
 }
