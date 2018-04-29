@@ -1,13 +1,4 @@
 
-/***
-
-
-Assumptions:
-    We Assume that input matrix is of even colomn and width size, that is, it is an n x n matrix.
-
-
-***/
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -17,30 +8,20 @@ typedef struct Node
 {
 	char data;
 	struct Node *next;
-	struct Node *tail;
 }Node;
 
-<<<<<<< HEAD
-Node *insert_node(Node *hd_ptr, char data);
-Node *print_node(Node *hd_ptr);
+void append_node(Node **hd_ptr, char in_data);
+void printLL(Node *hd_ptr);
+
 
 int main(int argc, char* argv[])
 {
 	int f_size = 0;
 	int counter = 0;
-=======
-int parse(char* fname, char** inp_buff);
-void transpose(char** src, char dst[], int size);
-
-int main(int argc, char* argv[])
-{
-	int height = 0;
->>>>>>> 316537f280bb985b5c50c34db5cc2457a632973c
     char *buffer;
     int c;
     FILE * fp;
     int n = 0;
-
 
     if (argc != 2)
     {
@@ -48,40 +29,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-<<<<<<< HEAD
     fp = fopen (argv[1], "r");
-=======
-    height = parse(argv[1], &buffer);
-
-    char t_array[height * height];
-
-    transpose(&buffer, t_array, height * height);
-    
-    free(buffer);
-    //printf("%s", buffer);
-    
-    //printf("%d", height);
-
-    return 0;
-}
-
-void transpose(char** src, char dst[], int size)
-{
-
-}
-
-int parse(char* fname, char** buffer)
-{
-    int c;
-    FILE * fp;
-    int f_size;
-    int n = 0;
-    int newline_c = 0;
-    char* inp_buff;
-    int height = 0;
-
-    fp = fopen (fname, "r");
->>>>>>> 316537f280bb985b5c50c34db5cc2457a632973c
     if (fp == NULL)
     {
         printf("failed to open file");
@@ -99,11 +47,7 @@ int parse(char* fname, char** buffer)
 
     while ((c = fgetc(fp)) != EOF)
     {       
-<<<<<<< HEAD
         if( c != '\t' && c != ' ' && c != '\n' && c != '\r')
-=======
-        if (c != '\t' && c != ' ')
->>>>>>> 316537f280bb985b5c50c34db5cc2457a632973c
         {
             buffer[n++] = c;
             if(!isalpha(c))
@@ -111,19 +55,7 @@ int parse(char* fname, char** buffer)
             	counter++;
             }
         }
-<<<<<<< HEAD
     }
-=======
-        if (c == '\n')
-        {
-            height++;
-        } 
-        
-        //printf("%c", c);  
-    }
-    //printf("%s\n", inp_buff);
-    *buffer = inp_buff;
->>>>>>> 316537f280bb985b5c50c34db5cc2457a632973c
 
 	counter = sqrt(counter);
 
@@ -149,7 +81,7 @@ int parse(char* fname, char** buffer)
     	{
     		if(buffer[c + ((counter + 1) * n) + counter] == '1')
     		{
-    			//llist_arr[n]->next = new;
+    			append_node(&llist_arr[n]->next, name[c-1]);
     			//new->data =
     			//printf("%d\n", pos[n][i]);
     		}
@@ -159,8 +91,12 @@ int parse(char* fname, char** buffer)
     	//printf("\n");
     }
 
+    for (n = 0; n < counter; n++)
+    {
+	    printLL(llist_arr[n]);
+	    printf("\n");
+    }
 
-<<<<<<< HEAD
     free(buffer);
     for(n = 0; n < counter; n++)
     {
@@ -171,36 +107,39 @@ int parse(char* fname, char** buffer)
 }
 
 
-Node *insert_node(Node *hd_ptr, char data)
+void append_node(Node** hd_ptr, char in_data)
 {
-	Node *new = (Node*)malloc(sizeof(Node));
-	Node *current = hd_ptr;
-	new->data = data;
-	new->tail = NULL;
+	Node* new = (Node*)malloc(sizeof(Node));
+	Node* last = *hd_ptr;
 
-	if (hd_ptr->tail == NULL)
+	new->data = in_data;
+	new->next = NULL;	//set new node next to null
+
+	if (*hd_ptr == NULL)
 	{
-		hd_ptr->tail = new;
+		*hd_ptr = new;
+		return;
 	}
-	else
-	{
-		while (current->tail != NULL)
+	else {
+		while (last->next != NULL)
 		{
-			current = current->tail;
+			last = last->next;
 		}
-		current->tail = new->tail;
 	}
-	return hd_ptr;
-=======
-    return height;
->>>>>>> 316537f280bb985b5c50c34db5cc2457a632973c
+
+	last->next = new;
 }
 
-Node *print_node(Node *hd_ptr)
+void printLL(Node *hd_ptr)
 {
 	while (hd_ptr != NULL)
 	{
-		printf(" %c", hd_ptr->data);
+		printf("%c", hd_ptr->data);
+
 		hd_ptr = hd_ptr->next;
+		if(hd_ptr != NULL)
+		{
+			printf("->");
+		}
 	}
 }
