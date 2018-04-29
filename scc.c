@@ -8,11 +8,11 @@ typedef struct Node
 {
 	char data;
 	struct Node *next;
-	struct Node *tail;
 }Node;
 
-Node *insert_node(Node *hd_ptr, char data);
-Node *print_node(Node *hd_ptr);
+void append_node(Node **hd_ptr, char in_data);
+void printLL(Node *hd_ptr);
+
 
 int main(int argc, char* argv[])
 {
@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
     	{
     		if(buffer[c + ((counter + 1) * n) + counter] == '1')
     		{
-    			//llist_arr[n]->next = new;
+    			append_node(&llist_arr[n]->next, name[c-1]);
     			//new->data =
     			//printf("%d\n", pos[n][i]);
     		}
@@ -91,6 +91,11 @@ int main(int argc, char* argv[])
     	//printf("\n");
     }
 
+    for (n = 0; n < counter; n++)
+    {
+	    printLL(llist_arr[n]);
+	    printf("\n");
+    }
 
     free(buffer);
     for(n = 0; n < counter; n++)
@@ -102,33 +107,39 @@ int main(int argc, char* argv[])
 }
 
 
-Node *insert_node(Node *hd_ptr, char data)
+void append_node(Node** hd_ptr, char in_data)
 {
-	Node *new = (Node*)malloc(sizeof(Node));
-	Node *current = hd_ptr;
-	new->data = data;
-	new->tail = NULL;
+	Node* new = (Node*)malloc(sizeof(Node));
+	Node* last = *hd_ptr;
 
-	if (hd_ptr->tail == NULL)
+	new->data = in_data;
+	new->next = NULL;	//set new node next to null
+
+	if (*hd_ptr == NULL)
 	{
-		hd_ptr->tail = new;
+		*hd_ptr = new;
+		return;
 	}
-	else
-	{
-		while (current->tail != NULL)
+	else {
+		while (last->next != NULL)
 		{
-			current = current->tail;
+			last = last->next;
 		}
-		current->tail = new->tail;
 	}
-	return hd_ptr;
+
+	last->next = new;
 }
 
-Node *print_node(Node *hd_ptr)
+void printLL(Node *hd_ptr)
 {
 	while (hd_ptr != NULL)
 	{
-		printf(" %c", hd_ptr->data);
+		printf("%c", hd_ptr->data);
+
 		hd_ptr = hd_ptr->next;
+		if(hd_ptr != NULL)
+		{
+			printf("->");
+		}
 	}
 }
