@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -22,3 +23,27 @@ printf("\n%d\n%d\n%d", ((*p)[0])->value,((*p)[1])->value,((*p)[2])->value);
 free(p);
 
 }
+=======
+
+	#include <stdio.h>
+
+	void func(const char** pptr){
+
+	    const char* str = "hello"; //store hello
+
+	    *pptr = str; //set pointer from main point to hello string
+
+	}
+
+	int main() {
+
+	    const char* ptr;
+
+	    func(&ptr); //pass by reference?
+
+	    printf("%s \n", ptr); //ptr should = hello
+
+	    return 0;
+
+	}
+>>>>>>> 316537f280bb985b5c50c34db5cc2457a632973c

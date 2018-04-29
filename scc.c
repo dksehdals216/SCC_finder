@@ -1,4 +1,13 @@
 
+/***
+
+
+Assumptions:
+    We Assume that input matrix is of even colomn and width size, that is, it is an n x n matrix.
+
+
+***/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -11,6 +20,7 @@ typedef struct Node
 	struct Node *tail;
 }Node;
 
+<<<<<<< HEAD
 Node *insert_node(Node *hd_ptr, char data);
 Node *print_node(Node *hd_ptr);
 
@@ -18,10 +28,19 @@ int main(int argc, char* argv[])
 {
 	int f_size = 0;
 	int counter = 0;
+=======
+int parse(char* fname, char** inp_buff);
+void transpose(char** src, char dst[], int size);
+
+int main(int argc, char* argv[])
+{
+	int height = 0;
+>>>>>>> 316537f280bb985b5c50c34db5cc2457a632973c
     char *buffer;
     int c;
     FILE * fp;
     int n = 0;
+
 
     if (argc != 2)
     {
@@ -29,7 +48,40 @@ int main(int argc, char* argv[])
         return -1;
     }
 
+<<<<<<< HEAD
     fp = fopen (argv[1], "r");
+=======
+    height = parse(argv[1], &buffer);
+
+    char t_array[height * height];
+
+    transpose(&buffer, t_array, height * height);
+    
+    free(buffer);
+    //printf("%s", buffer);
+    
+    //printf("%d", height);
+
+    return 0;
+}
+
+void transpose(char** src, char dst[], int size)
+{
+
+}
+
+int parse(char* fname, char** buffer)
+{
+    int c;
+    FILE * fp;
+    int f_size;
+    int n = 0;
+    int newline_c = 0;
+    char* inp_buff;
+    int height = 0;
+
+    fp = fopen (fname, "r");
+>>>>>>> 316537f280bb985b5c50c34db5cc2457a632973c
     if (fp == NULL)
     {
         printf("failed to open file");
@@ -47,7 +99,11 @@ int main(int argc, char* argv[])
 
     while ((c = fgetc(fp)) != EOF)
     {       
+<<<<<<< HEAD
         if( c != '\t' && c != ' ' && c != '\n' && c != '\r')
+=======
+        if (c != '\t' && c != ' ')
+>>>>>>> 316537f280bb985b5c50c34db5cc2457a632973c
         {
             buffer[n++] = c;
             if(!isalpha(c))
@@ -55,7 +111,19 @@ int main(int argc, char* argv[])
             	counter++;
             }
         }
+<<<<<<< HEAD
     }
+=======
+        if (c == '\n')
+        {
+            height++;
+        } 
+        
+        //printf("%c", c);  
+    }
+    //printf("%s\n", inp_buff);
+    *buffer = inp_buff;
+>>>>>>> 316537f280bb985b5c50c34db5cc2457a632973c
 
 	counter = sqrt(counter);
 
@@ -92,6 +160,7 @@ int main(int argc, char* argv[])
     }
 
 
+<<<<<<< HEAD
     free(buffer);
     for(n = 0; n < counter; n++)
     {
@@ -122,6 +191,9 @@ Node *insert_node(Node *hd_ptr, char data)
 		current->tail = new->tail;
 	}
 	return hd_ptr;
+=======
+    return height;
+>>>>>>> 316537f280bb985b5c50c34db5cc2457a632973c
 }
 
 Node *print_node(Node *hd_ptr)
