@@ -1,49 +1,96 @@
-<<<<<<< HEAD
-#include <stdlib.h>
-#include <stdio.h>
-
-typedef struct LList LList;
-struct LList {
-int value;
-LList *next; };
-
-int main()
+#include<stdio.h>
+#include<stdlib.h>
+ 
+typedef struct node
 {
-LList *(*p)[3]; /* pointer to an array of 3 pointers to LList */
-LList ll1 = {11};
-LList ll2 = {22};
-LList ll3 = {33};
-size_t sizeofarray = sizeof*p/sizeof**p; /* calc arraysize at runtime here */
-p = malloc( sizeofarray * sizeof**p ); /* allocate space for each LList-pointer in array */
-(*p)[0] = &ll1;
-(*p)[1] = &ll2;
-(*p)[2] = &ll3;
-/* test output here: */
-printf("\n%d\n%d\n%d", ((*p)[0])->value,((*p)[1])->value,((*p)[2])->value);
-free(p);
-
+    struct node *next;
+    int vertex;
+}node;
+ 
+node *G[20];   
+//heads of linked list
+int visited[20];
+int n;
+void read_graph(); 
+//create adjacency list
+void insert(int,int);  
+//insert an edge (vi,vj) in te adjacency list
+void DFS(int);
+ 
+void main()
+{
+    int i;
+    read_graph();
+    //initialised visited to 0
+   
+    for(i=0;i<n;i++)
+        visited[i]=0;
+ 
+    DFS(0);
 }
-=======
-
-	#include <stdio.h>
-
-	void func(const char** pptr){
-
-	    const char* str = "hello"; //store hello
-
-	    *pptr = str; //set pointer from main point to hello string
-
-	}
-
-	int main() {
-
-	    const char* ptr;
-
-	    func(&ptr); //pass by reference?
-
-	    printf("%s \n", ptr); //ptr should = hello
-
-	    return 0;
-
-	}
->>>>>>> 316537f280bb985b5c50c34db5cc2457a632973c
+ 
+void DFS(int i)
+{
+    node *p;
+   
+    printf("\n%d",i);
+    p=G[i];
+    visited[i]=1;
+    while(p!=NULL)
+    {
+       i=p->vertex;
+       
+       if(!visited[i])
+            DFS(i);
+        p=p->next;
+    }
+}
+ 
+void read_graph()
+{
+    int i,vi,vj,no_of_edges;
+    printf("Enter number of vertices:");
+   
+    scanf("%d",&n);
+ 
+    //initialise G[] with a null
+   
+    for(i=0;i<n;i++)
+    {
+        G[i]=NULL;
+        //read edges and insert them in G[]
+       
+        printf("Enter number of edges:");
+           scanf("%d",&no_of_edges);
+ 
+           for(i=0;i<no_of_edges;i++)
+        {
+            printf("Enter an edge(u,v):");
+            scanf("%d%d",&vi,&vj);
+            insert(vi,vj);
+        }
+    }
+}
+ 
+void insert(int vi,int vj)
+{
+    node *p,*q;
+    
+    //acquire memory for the new node
+    q=(node*)malloc(sizeof(node));
+    q->vertex=vj;
+    q->next=NULL;
+ 
+    //insert the node in the linked list number vi
+    if(G[vi]==NULL)
+        G[vi]=q;
+    else
+    {
+        //go to end of the linked list
+        p=G[vi];
+       
+        while(p->next!=NULL)
+            p=p->next;
+        p->next=q;
+    }
+}

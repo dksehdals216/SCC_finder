@@ -4,6 +4,13 @@
 #include <ctype.h>
 #include <math.h>
 
+
+//Pre-defined variables for DFS node colors
+#define white 0
+#define grey 1
+#define black 2
+
+
 typedef struct Node
 {
 	char data;
@@ -12,13 +19,19 @@ typedef struct Node
 
 void append_node(Node **hd_ptr, char in_data);
 void printLL(Node *hd_ptr);
-
-
+void freeLL(Node *hd_ptr);
+void DFS(int counter, Node** hd_ptr, int *color, int *dtime, int *ftime);
+void DFS_visit(int *color, int pos, int counter, int *dtime, int *ftime, int *time, Node** hd_ptr);
+	
 int main(int argc, char* argv[])
 {
+	int err = 0;
 	int f_size = 0;
 	int counter = 0;
-    char *buffer;
+    char *buffer = NULL;
+    int *ftime = NULL;
+	int *dtime = NULL;
+	int *color = NULL;
     int c;
     FILE * fp;
     int n = 0;
@@ -44,6 +57,11 @@ int main(int argc, char* argv[])
 
 
     buffer = (char *) malloc(f_size);
+	if (!buffer)
+	{
+		printf("Failed to allocate buffer!!\n");
+		goto done;
+	}
 
     while ((c = fgetc(fp)) != EOF)
     {       
@@ -63,6 +81,7 @@ int main(int argc, char* argv[])
  	char name[counter];
 
  	Node *llist_arr[counter];
+ 	Node *rev_llist[counter];
  	//llist_arr = malloc(counter * sizeof(llist_arr *));
 
 
@@ -70,8 +89,20 @@ int main(int argc, char* argv[])
  	for(n = 0; n < counter; n++)
  	{
  		llist_arr[n] = (Node*)malloc(sizeof(Node));
+ 		rev_llist[n] = (Node*)malloc(sizeof(Node));
+		if (!llist_arr[n])
+		{
+			printf("Failed to allocate Linked List!!\n");
+			goto done;
+		}
+		if (!rev_llist[n])
+		{
+			printf("Failed to allocate Reversed List!!\n");
+			goto done;
+		}
  		name[n] = buffer[n];
- 		llist_arr[n]->data = name[n];	
+ 		llist_arr[n]->data = name[n];
+ 		rev_llist[n]->data = name[n];
  		//printf("%c\n", llist_arr[n]->data);
  	}
 
@@ -87,9 +118,22 @@ int main(int argc, char* argv[])
     		}
     		//printf("%c", buffer[c + ((counter + 1) * n) + counter]);
     	}
-
     	//printf("\n");
     }
+
+    for(n = 0; n < counter; n++)
+    {
+	    for(c = 0; c < counter; c++)
+	    {
+	    	if(buffer[n + ((counter + 1) * c) + counter + 1] == '1')
+	    	{
+	    		append_node(&rev_llist[n]->next, name[c]);
+	    	}
+	    	//printf("%c", buffer[c + ((counter + 1) * n) + counter + 1]);
+	    	
+	    }
+		//printf("\n");
+	}
 
     for (n = 0; n < counter; n++)
     {
@@ -97,15 +141,52 @@ int main(int argc, char* argv[])
 	    printf("\n");
     }
 
-    free(buffer);
-    for(n = 0; n < counter; n++)
-    {
-    	free(llist_arr[n]);
-    }
+    printf("\n");
 
+    for (n = 0; n < counter; n++)
+    {
+    	printLL(rev_llist[n]);
+    	printf("\n");
+    }
+	
+	ftime =  malloc(counter * sizeof(int));
+	if (!ftime)
+	{
+		printf("Failed to allocate ftime!!\n");
+		goto done;
+	}
+
+	dtime = malloc(counter * sizeof(int));
+	if (!dtime)
+	{
+		printf("Failed to allocate dtime!!\n");
+		goto done;
+	}
+
+	color = malloc(counter * sizeof(int));
+	if (!color)
+	{
+		printf("Failed to allocate color!!\n");
+		goto done;
+	}
+	
     return 0;
 }
 
+done:
+{
+    free(buffer);
+    for(n = 0; n < counter; n++)
+    {
+    	freeLL(llist_arr[n]);
+    	freeLL(rev_llist[n]);
+    }
+
+    free(color);
+    free(dtime);
+    free(ftime);
+    return err;
+}
 
 void append_node(Node** hd_ptr, char in_data)
 {
@@ -135,11 +216,72 @@ void printLL(Node *hd_ptr)
 	while (hd_ptr != NULL)
 	{
 		printf("%c", hd_ptr->data);
+			printf("->");
 
 		hd_ptr = hd_ptr->next;
-		if(hd_ptr != NULL)
+		if(hd_ptr == NULL)
 		{
-			printf("->");
+			printf("%s", "NULL");
 		}
 	}
+}
+
+void freeLL(Node *hd_ptr)
+{
+	Node* tmp;
+
+	while(hd_ptr != NULL)
+	{
+		tmp = hd_ptr;
+		hd_ptr = hd_ptr->next;
+		free(tmp);
+	}
+}
+
+void DFS(int counter, Node** hd_ptr, int *color, int *dtime, int *ftime)
+{
+	int i;
+	int time = 0;
+
+	for(i = 0; i < counter; i++)
+	{
+		color[i] = white;
+	}
+
+	for(i = 0; i < counter; i++)
+	{
+		if(color[i] == white)
+		{
+			DFS_visit(color, i, counter, dtime, ftime, &time, hd_ptr);
+		}
+	}
+}
+
+void DFS_visit(int *color, int pos, int counter, int *dtime, int *ftime, int *time, Node** hd_ptr)
+{
+	int i = 0;
+	Node *tmp;
+	tmp = *hd_ptr;
+
+	color[pos] = grey;
+	time++;
+	dtime[pos] = *time;
+
+	for(i = 0; i < counter; i++)
+	{
+	    while(tmp!=NULL)
+	    {
+	    	i=tmp->data;
+	    	if(color[i] == white)
+	    	{
+	    		DFS_visit(color, i, counter, dtime, ftime, time, hd_ptr);
+	    	}
+	    	tmp=tmp->next;
+	    }
+
+	}
+
+	color[pos] = black;
+	time++;
+	ftime[pos] = *time;
 }
