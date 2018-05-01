@@ -22,17 +22,22 @@ void printLL(Node *hd_ptr);
 void freeLL(Node *hd_ptr);
 void DFS(int counter, Node** hd_ptr, int *color, int *dtime, int *ftime);
 void DFS_visit(int pos, int *time, int *color, int *dtime, int *ftime, Node** hd_ptr);
-int getListCount(Node* hd_ptr);
 
 int main(int argc, char* argv[])
 {
 	int err = 0;
 	int f_size = 0;
 	int counter = 0;
+
     char *buffer = NULL;
-    int *ftime = NULL;
-	int *dtime = NULL;
+
+    int *res_ftime = NULL;
+	int *res_dtime = NULL;
+	int *rev_dtime = NULL;
+	int *rev_ftime = NULL;
+
 	int *color = NULL;
+
     int c;
     FILE * fp;
     int n = 0;
@@ -82,8 +87,6 @@ int main(int argc, char* argv[])
 
  	Node *llist_arr[counter];
  	Node *rev_llist[counter];
- 	//llist_arr = malloc(counter * sizeof(llist_arr *));
-
 
  	//store labels A~Z in name array
  	for(n = 0; n < counter; n++)
@@ -98,10 +101,10 @@ int main(int argc, char* argv[])
 		{
 			printf("Failed to allocate Reversed List!!\n");
 		}
+
  		name[n] = buffer[n];
  		llist_arr[n]->data = name[n];
  		rev_llist[n]->data = name[n];
- 		//printf("%c\n", llist_arr[n]->data);
  	}
 
     for(n = 0; n < counter; n++)
@@ -111,12 +114,8 @@ int main(int argc, char* argv[])
     		if(buffer[c + ((counter + 1) * n) + counter] == '1')
     		{
     			append_node(&llist_arr[n]->next, name[c-1]);
-    			//new->data =
-    			//printf("%d\n", pos[n][i]);
     		}
-    		//printf("%c", buffer[c + ((counter + 1) * n) + counter]);
     	}
-    	//printf("\n");
     }
 
     for(n = 0; n < counter; n++)
@@ -127,10 +126,7 @@ int main(int argc, char* argv[])
 	    	{
 	    		append_node(&rev_llist[n]->next, name[c]);
 	    	}
-	    	//printf("%c", buffer[c + ((counter + 1) * n) + counter + 1]);
-	    	
 	    }
-		//printf("\n");
 	}
 
     for (n = 0; n < counter; n++)
@@ -148,11 +144,25 @@ int main(int argc, char* argv[])
     }
 
     printf("\n");
-	
-	printf("%s\n", "discovery time, finish time:");
-	DFS(counter, llist_arr, color, dtime, ftime);
-	printf("%s\n", "discovery time, finish time(transpose):");
-	DFS(counter, rev_llist, color, dtime, ftime);
+	res_ftime =  malloc(counter * sizeof(int));
+	res_dtime = malloc(counter * sizeof(int));
+	rev_ftime =  malloc(counter * sizeof(int));
+	rev_dtime =  malloc(counter * sizeof(int));
+
+	DFS(counter, llist_arr, color, res_dtime, res_ftime);
+	DFS(counter, rev_llist, color, rev_dtime, rev_ftime);
+
+    printf("\n%s\n", "Discovery , Finish Time");
+	for(n = 0; n < counter; n++)
+	{
+		printf("%d  %d\n", res_dtime[n], res_ftime[n]);
+	}
+    printf("\n%s\n", "Discovery , Finish Time (Transpose)");
+	for(n = 0; n < counter; n++)
+	{
+		printf("%d  %d\n", rev_dtime[n], rev_ftime[n]);
+	}
+
 
 	free(buffer);
 	for(n = 0; n < counter; n++)
@@ -162,12 +172,15 @@ int main(int argc, char* argv[])
 	}
 
 	free(color);
-	free(dtime);
-	free(ftime);
-	return err;
+	free(rev_ftime);
+	free(rev_dtime);
+	free(res_ftime);
+	free(res_dtime);
 
     return 0;
 }
+
+
 
 void append_node(Node** hd_ptr, char in_data)
 {
@@ -219,24 +232,11 @@ void freeLL(Node *hd_ptr)
 	}
 }
 
-
 void DFS(int counter, Node** hd_ptr, int *color, int *dtime, int *ftime)
 {
 	int i;
 	int time = 0;
 	int node_l = 0;
-
-	ftime =  malloc(counter * sizeof(int));
-	if (!ftime)
-	{
-		printf("Failed to allocate ftime!!\n");
-	}
-
-	dtime = malloc(counter * sizeof(int));
-	if (!dtime)
-	{
-		printf("Failed to allocate dtime!!\n");
-	}
 
 	color = malloc(counter * sizeof(int));
 	if (!color)
@@ -258,11 +258,7 @@ void DFS(int counter, Node** hd_ptr, int *color, int *dtime, int *ftime)
 		}
 	}
 
-	for(i = 0; i < counter; i++)
-	{
-		printf("%d  %d\n", dtime[i], ftime[i]);
-	}
-
+	free(color);
 }
 
 void DFS_visit(int pos, int *time, int *color, int *dtime, int *ftime, Node** hd_ptr)
@@ -270,12 +266,11 @@ void DFS_visit(int pos, int *time, int *color, int *dtime, int *ftime, Node** hd
 	int node_n;
 
 	Node* tmp = hd_ptr[pos];
-
 	color[pos] = grey;
 	(*time)++;
 	dtime[pos] = *time;
-	//printf("%d", *dtime[pos]);
 
+	//printf("%d", *dtime[pos]);
 	//traverse adj list at pos, for each v in Adj[u]
 	
 	while(tmp->next != NULL)
@@ -291,16 +286,4 @@ void DFS_visit(int pos, int *time, int *color, int *dtime, int *ftime, Node** hd
 	(*time)++;
 	ftime[pos] = *time;
 	
-}
-
-int getListCount(Node* hd_ptr)
-{
-	int count = 0;
-	Node* current = hd_ptr;
-	while (current != NULL)
-	{
-		count++;
-		current = current->next;
-	}
-	return count;
 }
