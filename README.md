@@ -9,8 +9,10 @@ C Program to that Finds Strongly Connected Components from adjacency matrix.
 Adjacency List, DFS discovery and Finish time is also found during the process.
 
 
-## How to find scc
+## Finding SCC in graph
+
 To Find SCC:
+
 1. Call DFS(G) to find f[u], finish times for each vertex
 2. Find Transpose(G)
 3. Call DFS(Transpose(G)), of decreasing order of f[u]
@@ -19,7 +21,8 @@ To Find SCC:
 --	As taken from CORMEN, 
 [(Introduction to Algorithms)](https://mitpress.mit.edu/books/introduction-algorithms)
 
-## Method
+## Method in Code
+
 * Parse input
 * Create Linked List
 * Find DFS discovery and finish time of linked list and its transpose

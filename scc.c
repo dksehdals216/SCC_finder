@@ -168,6 +168,8 @@ int main(int argc, char* argv[])
 		printf("%d  %d\n", rev_dtime[n], rev_ftime[n]);
 	}
 	printf("\n");
+
+	//Find & Output Strongly Connected Components
 	f_SCC(counter, rev_llist, res_ftime, forest, color, name);
 
 	//Memory allocation Free
