@@ -3,7 +3,6 @@
 Dongmin An,
 adominic@gmail.com
 
-
 1. Call DFS(G) to compute finishing times f[u] for each vertex u
 
 2. Compute Transpose(G)
@@ -41,7 +40,7 @@ void freeLL(Node *hd_ptr);
 void DFS(int pos, int counter, Node** hd_ptr, int *color, int *dtime, int *ftime);
 void DFS_visit(int pos, int *time, int *color, int *dtime, int *ftime, Node** hd_ptr);
 void f_SCC(int counter, Node** hd_ptr, int *ftime,  int* forest, int *color, char *name);
-void insertion_keep(int *inp_cont, int *pos_cont, int counter);
+void insrt_sort(int *inp_cont, int *pos_cont, int counter);
 
 int main(int argc, char* argv[])
 {
@@ -50,6 +49,7 @@ int main(int argc, char* argv[])
 	int f_size = 0;
 	int counter = 0;
     FILE * fp;
+ 	char name[counter];
     char *buffer = NULL;
 
     int *res_ftime = NULL;
@@ -78,8 +78,8 @@ int main(int argc, char* argv[])
     f_size = ftell(fp);
     fseek (fp, 0L, SEEK_SET); 
 
+    //Parse input
     buffer = (char *) malloc(f_size);
-
     while ((c = fgetc(fp)) != EOF)
     {       
         if( c != '\t' && c != ' ' && c != '\n' && c != '\r')
@@ -93,7 +93,6 @@ int main(int argc, char* argv[])
     }
 
 	counter = sqrt(counter);
- 	char name[counter];
 
  	Node *llist_arr[counter];
  	Node *rev_llist[counter];
@@ -147,10 +146,9 @@ int main(int argc, char* argv[])
     	printLL(rev_llist[n]);
     	printf("\n");
     }
-    printf("\n");
 
 	res_ftime =  malloc(counter * sizeof(int));
-	res_dtime = malloc(counter * sizeof(int));
+	res_dtime =  malloc(counter * sizeof(int));
 	rev_ftime =  malloc(counter * sizeof(int));
 	rev_dtime =  malloc(counter * sizeof(int));
 
@@ -169,18 +167,16 @@ int main(int argc, char* argv[])
 	{
 		printf("%d  %d\n", rev_dtime[n], rev_ftime[n]);
 	}
-
 	printf("\n");
 	f_SCC(counter, rev_llist, res_ftime, forest, color, name);
 
-
 	//Memory allocation Free
-	free(buffer);
 	for(n = 0; n < counter; n++)
 	{
 		freeLL(llist_arr[n]);
 		freeLL(rev_llist[n]);
 	}
+	free(buffer);
 	free(color);
 	free(rev_ftime);
 	free(rev_dtime);
@@ -204,14 +200,14 @@ void f_SCC(int counter, Node** hd_ptr, int *ftime,  int* forest, int *color, cha
 		printf("Failed to allocate color!!\n");
 	}
 
-	insertion_keep(ftime, sort_ftime, counter);
+	insrt_sort(ftime, sort_ftime, counter);
 
 	for(i = counter; i > 0; i--)
 	{
 		DFS(sort_ftime[i], counter, hd_ptr, color, scc_d, scc_f);
 	}
 
-	insertion_keep(scc_d, sort_ftime, counter);
+	insrt_sort(scc_d, sort_ftime, counter);
 
 	//Print output to screen
 	k = 1;
@@ -234,14 +230,13 @@ void f_SCC(int counter, Node** hd_ptr, int *ftime,  int* forest, int *color, cha
 	free(forest);
 }
 
-
 void append_node(Node** hd_ptr, char in_data)
 {
 	Node* new = (Node*)malloc(sizeof(Node));
 	Node* last = *hd_ptr;
 
 	new->data = in_data;
-	new->next = NULL;	//set new node next to null
+	new->next = NULL;	
 
 	if (*hd_ptr == NULL)
 	{
@@ -262,8 +257,7 @@ void printLL(Node *hd_ptr)
 	while (hd_ptr != NULL)
 	{
 		printf("%c", hd_ptr->data);
-			printf("->");
-
+		printf("->");
 		hd_ptr = hd_ptr->next;
 		if(hd_ptr == NULL)
 		{
@@ -275,7 +269,6 @@ void printLL(Node *hd_ptr)
 void freeLL(Node *hd_ptr)
 {
 	Node* tmp;
-
 	while(hd_ptr != NULL)
 	{
 		tmp = hd_ptr;
@@ -299,7 +292,6 @@ void DFS(int pos, int counter, Node** hd_ptr, int *color, int *dtime, int *ftime
 	for(i = 0; i < counter; i++)
 	{
 		color[i] = white;
-		//printf("%d", *color[i]);
 	}
 
 	for(i = pos; i < counter; i++)
@@ -322,8 +314,6 @@ void DFS(int pos, int counter, Node** hd_ptr, int *color, int *dtime, int *ftime
 
 void DFS_visit(int pos, int *time, int *color, int *dtime, int *ftime, Node** hd_ptr)
 {	
-	int node_n;
-
 	Node* tmp = hd_ptr[pos];
 	color[pos] = grey;
 	(*time)++;
@@ -343,7 +333,7 @@ void DFS_visit(int pos, int *time, int *color, int *dtime, int *ftime, Node** hd
 	ftime[pos] = *time;
 }
 
-void insertion_keep(int *inp_cont, int *pos_cont, int counter)
+void insrt_sort(int *inp_cont, int *pos_cont, int counter)
 {
 	int tmp = 0;
 	int n_tmp = 0;
