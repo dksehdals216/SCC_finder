@@ -2,8 +2,11 @@
 # SCC Finder
 
 Dongmin An,
-	adominic022@gmail.com
-	21600397@handong.edu
+adominic022@gmail.com
+21600397@handong.edu
+
+C Program to that Finds Strongly Connected Components from adjacency matrix.
+Adjacency List, DFS discovery and Finish time is also found during the process.
 
 
 ## How to find scc
