@@ -39,10 +39,12 @@ Need to link math library for math.h
 ### Example program execution with GCC: 
 
 ```	
-$ gcc scc.c -o scc
+$ gcc scc.c -o scc -lm
 $ ./scc sample.data
 ```
 
 ### System & Compiler
-Ubuntu 17.10,
+
+Ubuntu 17.10
+
 GCC 7.2.0 (Ubuntu 7.2.0-8ubuntu3.2) 

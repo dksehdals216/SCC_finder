@@ -30,8 +30,8 @@ of step 3 as a separate strong connected component
 
 typedef struct Node
 {
-	char data;
-	struct Node *next;
+    char data;
+    struct Node *next;
 }Node;
 
 void append_node(Node **hd_ptr, char in_data);
@@ -46,19 +46,19 @@ int main(int argc, char* argv[])
 {
     int c;
     int n = 0;
-	int f_size = 0;
-	int counter = 0;
+    int f_size = 0;
+    int counter = 0;
     FILE * fp;
- 	char name[counter];
+    char name[counter];
     char *buffer = NULL;
 
     int *res_ftime = NULL;
-	int *res_dtime = NULL;
-	int *rev_dtime = NULL;
-	int *rev_ftime = NULL;
+    int *res_dtime = NULL;
+    int *rev_dtime = NULL;
+    int *rev_ftime = NULL;
 
-	int *color = NULL;
-	int *forest = NULL;
+    int *color = NULL;
+    int *forest = NULL;
 
     if (argc != 2)
     {
@@ -92,274 +92,274 @@ int main(int argc, char* argv[])
         }
     }
 
-	counter = sqrt(counter);
+    counter = sqrt(counter);
 
- 	Node *llist_arr[counter];
- 	Node *rev_llist[counter];
+    Node *llist_arr[counter];
+    Node *rev_llist[counter];
 
- 	//store labels A~Z in name array
- 	for(n = 0; n < counter; n++)
- 	{
- 		llist_arr[n] = (Node*)malloc(sizeof(Node));
- 		rev_llist[n] = (Node*)malloc(sizeof(Node));
-
- 		name[n] = buffer[n];
- 		llist_arr[n]->data = name[n];
- 		rev_llist[n]->data = name[n];
- 	}
-
- 	//Add Nodes to Linked List from input
+    //store labels A~Z in name array
     for(n = 0; n < counter; n++)
     {
-    	for(c = 1; c < counter + 1; c++)
-    	{
-    		if(buffer[c + ((counter + 1) * n) + counter] == '1')
-    		{
-    			append_node(&llist_arr[n]->next, name[c-1]);
-    		}
-    	}
+        llist_arr[n] = (Node*)malloc(sizeof(Node));
+        rev_llist[n] = (Node*)malloc(sizeof(Node));
+
+        name[n] = buffer[n];
+        llist_arr[n]->data = name[n];
+        rev_llist[n]->data = name[n];
+    }
+
+    //Add Nodes to Linked List from input
+    for(n = 0; n < counter; n++)
+    {
+        for(c = 1; c < counter + 1; c++)
+        {
+            if(buffer[c + ((counter + 1) * n) + counter] == '1')
+            {
+                append_node(&llist_arr[n]->next, name[c-1]);
+            }
+        }
     }
     for(n = 0; n < counter; n++)
     {
-	    for(c = 0; c < counter; c++)
-	    {
-	    	if(buffer[n + ((counter + 1) * c) + counter + 1] == '1')
-	    	{
-	    		append_node(&rev_llist[n]->next, name[c]);
-	    	}
-	    }
-	}
+        for(c = 0; c < counter; c++)
+        {
+            if(buffer[n + ((counter + 1) * c) + counter + 1] == '1')
+            {
+                append_node(&rev_llist[n]->next, name[c]);
+            }
+        }
+    }
 
-	//Print Linked List Repressenting Adj List
-	printf("%s\n", "Adjacency List:");
+    //Print Linked List Repressenting Adj List
+    printf("%s\n", "Adjacency List:");
     for (n = 0; n < counter; n++)
     {
-	    printLL(llist_arr[n]);
-	    printf("\n");
+        printLL(llist_arr[n]);
+        printf("\n");
     }
 
     printf("\n");
-	printf("%s\n", "Adjacency List (Transpose):");
+    printf("%s\n", "Adjacency List (Transpose):");
 
     for (n = 0; n < counter; n++)
     {
-    	printLL(rev_llist[n]);
-    	printf("\n");
+        printLL(rev_llist[n]);
+        printf("\n");
     }
 
-	res_ftime =  malloc(counter * sizeof(int));
-	res_dtime =  malloc(counter * sizeof(int));
-	rev_ftime =  malloc(counter * sizeof(int));
-	rev_dtime =  malloc(counter * sizeof(int));
+    res_ftime =  malloc(counter * sizeof(int));
+    res_dtime =  malloc(counter * sizeof(int));
+    rev_ftime =  malloc(counter * sizeof(int));
+    rev_dtime =  malloc(counter * sizeof(int));
 
-	DFS(0, counter, llist_arr, color, res_dtime, res_ftime);
-	DFS(0, counter, rev_llist, color, rev_dtime, rev_ftime);
+    DFS(0, counter, llist_arr, color, res_dtime, res_ftime);
+    DFS(0, counter, rev_llist, color, rev_dtime, rev_ftime);
 
-	//Print DFS & Transpose DFS Output
+    //Print DFS & Transpose DFS Output
     printf("\n%s\n", "Discovery , Finish Time:");
-	for(n = 0; n < counter; n++)
-	{
-		printf("%d  %d\n", res_dtime[n], res_ftime[n]);
-	}
+    for(n = 0; n < counter; n++)
+    {
+        printf("%d  %d\n", res_dtime[n], res_ftime[n]);
+    }
 
     printf("\n%s\n", "Discovery , Finish Time (Transpose):");
-	for(n = 0; n < counter; n++)
-	{
-		printf("%d  %d\n", rev_dtime[n], rev_ftime[n]);
-	}
-	printf("\n");
+    for(n = 0; n < counter; n++)
+    {
+        printf("%d  %d\n", rev_dtime[n], rev_ftime[n]);
+    }
+    printf("\n");
 
-	//Find & Output Strongly Connected Components
-	f_SCC(counter, rev_llist, res_ftime, forest, color, name);
+    //Find & Output Strongly Connected Components
+    f_SCC(counter, rev_llist, res_ftime, forest, color, name);
 
-	//Memory allocation Free
-	for(n = 0; n < counter; n++)
-	{
-		freeLL(llist_arr[n]);
-		freeLL(rev_llist[n]);
-	}
-	free(buffer);
-	free(color);
-	free(rev_ftime);
-	free(rev_dtime);
-	free(res_ftime);
-	free(res_dtime);
-	free(forest);
+    //Memory allocation Free
+    for(n = 0; n < counter; n++)
+    {
+        freeLL(llist_arr[n]);
+        freeLL(rev_llist[n]);
+    }
+    free(buffer);
+    free(color);
+    free(rev_ftime);
+    free(rev_dtime);
+    free(res_ftime);
+    free(res_dtime);
+    free(forest);
 
     return 0;
 }
 
 void f_SCC(int counter, Node** hd_ptr, int *ftime,  int* forest, int *color, char *name)
 {
-	int i, j, k;
-	int *scc_d = malloc(counter * sizeof(int));
-	int *scc_f = malloc(counter * sizeof(int));
-	int *sort_ftime = malloc(counter * sizeof(int));
-	forest = malloc(counter * sizeof(int)); 	//think of way to return 
-	color = malloc(counter * sizeof(int));
-	if (!color)
-	{
-		printf("Failed to allocate color!!\n");
-	}
+    int i, j, k;
+    int *scc_d = malloc(counter * sizeof(int));
+    int *scc_f = malloc(counter * sizeof(int));
+    int *sort_ftime = malloc(counter * sizeof(int));
+    forest = malloc(counter * sizeof(int)); 	//think of way to return 
+    color = malloc(counter * sizeof(int));
+    if (!color)
+    {
+        printf("Failed to allocate color!!\n");
+    }
 
-	insrt_sort(ftime, sort_ftime, counter);
+    insrt_sort(ftime, sort_ftime, counter);
 
-	for(i = counter; i > 0; i--)
-	{
-		DFS(sort_ftime[i], counter, hd_ptr, color, scc_d, scc_f);
-	}
+    for(i = counter; i > 0; i--)
+    {
+        DFS(sort_ftime[i], counter, hd_ptr, color, scc_d, scc_f);
+    }
 
-	insrt_sort(scc_d, sort_ftime, counter);
+    insrt_sort(scc_d, sort_ftime, counter);
 
-	//Print output to screen
-	k = 1;
-	printf("%d%s", k, "-SCC: ");
-	for(i = 0; i < counter; i++)
-	{
-		printf("%c ", name[sort_ftime[i]]);
-		if(i != counter - 1 && scc_d[i]+1 != scc_d[i+1])
-		{
-			k++;
-			printf("\n%d%s", k, "-SCC: ");
-		}
-	}
-	printf("\n\n");
+    //Print output to screen
+    k = 1;
+    printf("%d%s", k, "-SCC: ");
+    for(i = 0; i < counter; i++)
+    {
+        printf("%c ", name[sort_ftime[i]]);
+        if(i != counter - 1 && scc_d[i]+1 != scc_d[i+1])
+        {
+            k++;
+            printf("\n%d%s", k, "-SCC: ");
+        }
+    }
+    printf("\n\n");
 
-	free(color);
-	free(scc_f);
-	free(scc_d);
-	free(sort_ftime);
-	free(forest);
+    free(color);
+    free(scc_f);
+    free(scc_d);
+    free(sort_ftime);
+    free(forest);
 }
 
 void append_node(Node** hd_ptr, char in_data)
 {
-	Node* new = (Node*)malloc(sizeof(Node));
-	Node* last = *hd_ptr;
+    Node* new = (Node*)malloc(sizeof(Node));
+    Node* last = *hd_ptr;
 
-	new->data = in_data;
-	new->next = NULL;	
+    new->data = in_data;
+    new->next = NULL;	
 
-	if (*hd_ptr == NULL)
-	{
-		*hd_ptr = new;
-		return;
-	}
-	else {
-		while (last->next != NULL)
-		{
-			last = last->next;
-		}
-	}
-	last->next = new;
+    if (*hd_ptr == NULL)
+    {
+        *hd_ptr = new;
+        return;
+    }
+    else {
+        while (last->next != NULL)
+        {
+            last = last->next;
+        }
+    }
+    last->next = new;
 }
 
 void printLL(Node *hd_ptr)
 {
-	while (hd_ptr != NULL)
-	{
-		printf("%c", hd_ptr->data);
-		printf("->");
-		hd_ptr = hd_ptr->next;
-		if(hd_ptr == NULL)
-		{
-			printf("%s", "NULL");
-		}
-	}
+    while (hd_ptr != NULL)
+    {
+        printf("%c", hd_ptr->data);
+        printf("->");
+        hd_ptr = hd_ptr->next;
+        if(hd_ptr == NULL)
+        {
+            printf("%s", "NULL");
+        }
+    }
 }
 
 void freeLL(Node *hd_ptr)
 {
-	Node* tmp;
-	while(hd_ptr != NULL)
-	{
-		tmp = hd_ptr;
-		hd_ptr = hd_ptr->next;
-		free(tmp);
-	}
+    Node* tmp;
+    while(hd_ptr != NULL)
+    {
+        tmp = hd_ptr;
+        hd_ptr = hd_ptr->next;
+        free(tmp);
+    }
 }
 
 void DFS(int pos, int counter, Node** hd_ptr, int *color, int *dtime, int *ftime)
 {
-	int i;
-	int time = 0;
-	int node_l = 0;
+    int i;
+    int time = 0;
+    int node_l = 0;
 
-	color = malloc(counter * sizeof(int));
-	if (!color)
-	{
-		printf("Failed to allocate color!!\n");
-	}
+    color = malloc(counter * sizeof(int));
+    if (!color)
+    {
+        printf("Failed to allocate color!!\n");
+    }
 
-	for(i = 0; i < counter; i++)
-	{
-		color[i] = white;
-	}
+    for(i = 0; i < counter; i++)
+    {
+        color[i] = white;
+    }
 
-	for(i = pos; i < counter; i++)
-	{
-		if(color[i] == white)
-		{
-			DFS_visit(i, (&time), color, dtime, ftime, hd_ptr);
-		}
-	}
-	for(i = 0; i < pos; i++)
-	{
-		if(color[i] == white)
-		{
-			DFS_visit(i, (&time), color, dtime, ftime, hd_ptr);
-		}
-	}
+    for(i = pos; i < counter; i++)
+    {
+        if(color[i] == white)
+        {
+            DFS_visit(i, (&time), color, dtime, ftime, hd_ptr);
+        }
+    }
+    for(i = 0; i < pos; i++)
+    {
+        if(color[i] == white)
+        {
+            DFS_visit(i, (&time), color, dtime, ftime, hd_ptr);
+        }
+    }
 
-	free(color);
+    free(color);
 }
 
 void DFS_visit(int pos, int *time, int *color, int *dtime, int *ftime, Node** hd_ptr)
-{	
-	Node* tmp = hd_ptr[pos];
-	color[pos] = grey;
-	(*time)++;
-	dtime[pos] = *time;
+{
+    Node* tmp = hd_ptr[pos];
+    color[pos] = grey;
+    (*time)++;
+    dtime[pos] = *time;
 
-	while(tmp->next != NULL)
-	{	
-		tmp=tmp->next;
-		if(color[tmp->data - 'A'] == white)
-		{
-			DFS_visit(tmp->data - 'A', time, color, dtime, ftime, hd_ptr);
-		}
-	}
+    while(tmp->next != NULL)
+    {
+        tmp=tmp->next;
+        if(color[tmp->data - 'A'] == white)
+        {
+            DFS_visit(tmp->data - 'A', time, color, dtime, ftime, hd_ptr);
+        }
+    }
 
-	color[pos] = black;
-	(*time)++;
-	ftime[pos] = *time;
+    color[pos] = black;
+    (*time)++;
+    ftime[pos] = *time;
 }
 
 void insrt_sort(int *inp_cont, int *pos_cont, int counter)
 {
-	int tmp = 0;
-	int n_tmp = 0;
-	int i, j;
+    int tmp = 0;
+    int n_tmp = 0;
+    int i, j;
 
-	for(i = 0; i < counter; i++)
-	{
-		pos_cont[i] = i;
-	}
+    for(i = 0; i < counter; i++)
+    {
+        pos_cont[i] = i;
+    }
 
-	for(i = 0; i < counter; i++)
-	{
-		j = i;
-		while(j > 0 && inp_cont[j-1] > inp_cont[j])
-		{
-			tmp = inp_cont[j];
-			inp_cont[j] = inp_cont[j-1];
-			inp_cont[j-1] = tmp;
-			
-			n_tmp = pos_cont[j];
-			pos_cont[j] = pos_cont[j-1];
-			pos_cont[j-1] = n_tmp;
+    for(i = 0; i < counter; i++)
+    {
+        j = i;
+        while(j > 0 && inp_cont[j-1] > inp_cont[j])
+        {
+            tmp = inp_cont[j];
+            inp_cont[j] = inp_cont[j-1];
+            inp_cont[j-1] = tmp;
 
-			j--;
-		}
-	}
+            n_tmp = pos_cont[j];
+            pos_cont[j] = pos_cont[j-1];
+            pos_cont[j-1] = n_tmp;
+
+            j--;
+        }
+    }
 }
